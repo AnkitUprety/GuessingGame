@@ -1,0 +1,136 @@
+#!/bin/bash
+# Required Functions
+country_code() {
+	echo -e "Can you guess whch one of the following\nis the best football team?"
+	echo "-------------------------------"
+	echo "| Code       |  Country       |"
+	echo "-------------------------------"
+	echo "| BRZ        |  Brazil        |"
+	echo "-------------------------------"
+	echo "| ARG        |  Argentina     |"
+	echo "-------------------------------"
+	echo "| NEP        |  Nepal         |"
+	echo "-------------------------------"
+	echo "| CHI        |  China         |"
+	echo "-------------------------------"
+	echo "| ENG        |  England       |"
+	echo "-------------------------------"
+}
+player_codes(){
+	echo  "The list of five-star football players are: "
+	echo "-------------------------------"
+	echo "| Code    |  Player           |"
+	echo "-------------------------------"
+	echo "| LM      |  Lionel Messi     |"
+	echo "-------------------------------"
+	echo "| NJ      |  Neymar Junior    |"
+	echo "-------------------------------"
+	echo "| KC      |  Kiran Chemjong   |"
+	echo "-------------------------------"
+	echo "| ZZ      |  Zheng Zhi        |"
+	echo "-------------------------------"
+	echo "| HK      |  Harry Kane       |"
+	echo "-------------------------------"
+	echo "Choose 3 players:"
+	read a b c
+	for player in $a $b $c
+	do
+		if [[ $player == LM || $player == NJ || $player == KC || $player == ZZ || $player == HK ]]
+		then
+			num $a $b $c
+		else
+			echo "Given Code is invalid"
+			player_codes
+		fi
+	done
+}
+FileRead() {
+	if [[ -f $1 ]]
+	then
+		cat $1
+	else	
+		echo "File not found"
+		player_codes
+	fi
+}
+
+num() {
+	if [[ $# != 3 ]]; then
+		echo "Give 3 codes"
+		player_codes
+	else
+		PS3="Choose a player:"
+		select player in $a $b $c
+		do
+			case $player in
+				"LM") FileRead LM
+				break
+				;;
+				"NJ") FileRead NJ
+				break
+				;;
+				"KC") FileRead KC
+				break
+				;;
+				"ZZ") FileRead ZZ
+				break
+				;;
+				"HK") FileRead HK
+				break
+				;;
+			esac
+		done
+		echo "Press y to continue:"
+		read y
+		if [[ $y != y ]]; then
+			exit
+		else
+			country_select
+		fi
+	fi
+}
+country_select(){
+	country_code
+	best_country=BRZ
+	read country
+	until [[ $country = $best_country ]]; do
+		if [[ $country = ARG || $country = NEP || $country = CHI || $country = ENG ]]; then
+			echo "$country is not the best."
+			read country
+		else
+			echo "Invalid country code."
+			read country
+		fi
+	done
+	echo "Brazil is the best."
+	player_codes
+}
+while [[ True ]]; do
+	if [[ $# -le 1 ]]; then
+		echo "Error! Please enter both your name and ID."
+		exit
+	elif [[ $# -gt 2 ]]; then
+		echo "Error! PLease enter name and ID only."
+		exit
+	else
+		echo "Thank You!"
+	fi
+	secret_key=12345
+	echo "PLease enter the secret key to enter."
+	read -s key
+	count=3
+	while [[ $key != $secret_key ]]; do
+		if [[ $count -ge 1 ]]; then
+			echo "$count chances remaining."
+			((count--))
+			read -s key
+		else
+			echo " The program exits."
+			exit
+		fi
+	done
+	echo "Welcome $1 $2"
+	echo $(date)
+	country_select
+done
+echo "-------------"
